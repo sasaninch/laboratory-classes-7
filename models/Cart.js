@@ -14,30 +14,24 @@ class Cart {
       throw new Error(`Product '${productName}' not found.`);
     }
 
-    // Check if cart exists with items
     const cart = await db.collection(COLLECTION_NAME).findOne({ items: { $exists: true } });
 
     if (!cart) {
-      // If no cart exists, create a new one with the product
       return db.collection(COLLECTION_NAME).insertOne({
         items: [{ product, quantity: 1 }]
       });
     }
 
-    // Check if product already exists in cart
     const existingProductIndex = cart.items.findIndex(
       item => item.product.name === productName
     );
 
     if (existingProductIndex !== -1) {
-      // If product exists, update its quantity
       cart.items[existingProductIndex].quantity += 1;
     } else {
-      // If product doesn't exist in cart, add it
       cart.items.push({ product, quantity: 1 });
     }
 
-    // Update the cart in the database
     return db.collection(COLLECTION_NAME).updateOne(
       { _id: cart._id },
       { $set: { items: cart.items } }
