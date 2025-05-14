@@ -3,8 +3,8 @@ const logger = require("../utils/logger");
 
 const cartController = require("./cartController");
 
-exports.getLogoutView = (request, response) => {
-  const cartCount = cartController.getProductsCount();
+exports.getLogoutView = async (request, response) => {
+  const cartCount = await cartController.getProductsCount();
 
   response.render("logout.ejs", {
     headTitle: "Shop - Logout",
